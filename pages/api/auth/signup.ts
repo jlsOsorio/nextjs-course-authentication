@@ -1,8 +1,14 @@
 import { ICreateUser, ICreateUserHashedPassword } from '@/interfaces/user';
 import { hashPassword } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/db';
+import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+interface SignupDocument {
+  id?: ObjectId;
+  email?: string;
+  password?: string;
+}
 export interface JsonResponse {
   message?: string;
 }
@@ -37,11 +43,23 @@ async function handler(
     const client = await connectToDatabase();
     const db = client.db(process.env.DB_NAME);
 
+    const searchUser: SignupDocument = {
+      email,
+    };
+
+    const existingUser = await db.collection('users').findOne(searchUser);
+    if (existingUser) {
+      res.status(422).json({ message: 'User already exists!' });
+      client.close();
+      return;
+    }
+
     const result = await db.collection('users').insertOne(user);
 
     res.status(201).json({
       message: 'Created  user!',
     });
+    client.close();
   }
 }
 
