@@ -5,5 +5,5 @@ export interface ICreateUser {
 
 export interface ICreateUserHashedPassword {
   email: string;
-  password: Promise<string>;
+  password: string;
 }
