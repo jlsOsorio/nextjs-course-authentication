@@ -1,9 +1,12 @@
-export interface ICreateUser {
+import { ObjectId } from 'mongodb';
+
+export interface IUser {
+  _id?: ObjectId;
   email: string;
   password: string;
 }
 
-export interface ICreateUserHashedPassword {
+export interface ILoginUser {
+  id: string;
   email: string;
-  password: string;
 }

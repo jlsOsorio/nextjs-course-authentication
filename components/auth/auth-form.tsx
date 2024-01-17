@@ -1,13 +1,10 @@
 import React, { FormEvent } from 'react';
-
 import styles from './auth-form.module.css';
-import { ICreateUser } from '@/interfaces/user';
 import { JsonResponse } from '@/pages/api/auth/signup';
+import { IUser } from '@/interfaces/user';
+import { signIn } from 'next-auth/react';
 
-async function createUser({
-  email,
-  password,
-}: ICreateUser): Promise<JsonResponse> {
+async function createUser({ email, password }: IUser): Promise<JsonResponse> {
   const response = await fetch('/api/auth/signup', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
@@ -46,10 +43,16 @@ const AuthForm = () => {
     // Optional: Add validation
 
     if (isLogin) {
-      //login
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: enteredEmail,
+        password: enteredPassword,
+      });
+
+      console.log(result);
     } else {
       if (enteredEmail && enteredPassword) {
-        const user: ICreateUser = {
+        const user: IUser = {
           email: enteredEmail,
           password: enteredPassword,
         };

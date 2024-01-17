@@ -1,4 +1,4 @@
-import { ICreateUser, ICreateUserHashedPassword } from '@/interfaces/user';
+import { IUser } from '@/interfaces/user';
 import { hashPassword } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/db';
 import { ObjectId } from 'mongodb';
@@ -9,6 +9,7 @@ interface SignupDocument {
   email?: string;
   password?: string;
 }
+
 export interface JsonResponse {
   message?: string;
 }
@@ -18,7 +19,7 @@ async function handler(
   res: NextApiResponse<JsonResponse>
 ) {
   if (req.method === 'POST') {
-    const data: ICreateUser = req.body;
+    const data: IUser = req.body;
 
     const { email, password } = data;
 
@@ -35,7 +36,7 @@ async function handler(
       return;
     }
 
-    const user: ICreateUserHashedPassword = {
+    const user: IUser = {
       email,
       password: await hashPassword(password),
     };
