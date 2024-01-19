@@ -3,6 +3,7 @@ import styles from './auth-form.module.css';
 import { JsonResponse } from '@/pages/api/auth/signup';
 import { IUser } from '@/interfaces/user';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 async function createUser({ email, password }: IUser): Promise<JsonResponse> {
   const response = await fetch('/api/auth/signup', {
@@ -23,6 +24,7 @@ async function createUser({ email, password }: IUser): Promise<JsonResponse> {
 }
 
 const AuthForm = () => {
+  const router = useRouter();
   const emailInputRef = React.useRef<HTMLInputElement | null>(null);
   const passwordInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -50,6 +52,10 @@ const AuthForm = () => {
       });
 
       console.log(result);
+
+      if (!result?.error) {
+        router.replace('/profile');
+      }
     } else {
       if (enteredEmail && enteredPassword) {
         const user: IUser = {
