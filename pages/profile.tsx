@@ -1,15 +1,15 @@
 import { GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
+
 import UserProfile from '../components/profile/user-profile';
-import { getSession } from 'next-auth/react';
+import { authOptions } from './api/auth/[...nextauth]';
 
 const ProfilePage = () => {
   return <UserProfile />;
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession({
-    req: context.req,
-  });
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   if (!session) {
     return {
@@ -22,7 +22,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      session,
+      user: session.user?.email,
     },
   };
 }

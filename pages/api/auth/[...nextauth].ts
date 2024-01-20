@@ -1,13 +1,15 @@
+import NextAuth, { AuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+
 import { ILoginUser, IUser } from '@/interfaces/user';
 import { verifyPassword } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/db';
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -52,4 +54,6 @@ export default NextAuth({
       },
     }),
   ],
-});
+};
+
+export default NextAuth(authOptions);

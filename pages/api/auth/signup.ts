@@ -1,13 +1,14 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ObjectId } from 'mongodb';
+
 import { IUser } from '@/interfaces/user';
 import { hashPassword } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/db';
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
 
-interface SignupDocument {
+export interface UserDocument {
   id?: ObjectId;
-  email?: string;
-  password?: string;
+  email?: string | null;
+  password?: string | null;
 }
 
 export interface JsonResponse {
@@ -44,7 +45,7 @@ async function handler(
     const client = await connectToDatabase();
     const db = client.db(process.env.DB_NAME);
 
-    const searchUser: SignupDocument = {
+    const searchUser: UserDocument = {
       email,
     };
 
